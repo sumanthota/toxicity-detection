@@ -1,0 +1,8 @@
+.venv/
+data/
+fine_tuned_bert/
+peft_bert/
+.env
+.DS_Store
+*.pyc
+

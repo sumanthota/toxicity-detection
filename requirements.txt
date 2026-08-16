@@ -1,0 +1,9 @@
+kagglehub
+python-dotenv
+torch
+transformers
+peft
+detoxify
+scikit-learn
+pandas
+tqdm
