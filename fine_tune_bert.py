@@ -27,7 +27,7 @@ MAX_LENGTH = 128
 
 # Cap the amount of training data used per epoch for faster iteration.
 # Set to None to train on the full ~157k remaining rows.
-TRAIN_SAMPLE_SIZE = 20000
+TRAIN_SAMPLE_SIZE = 40000
 
 TRAIN_BATCH_SIZE = 16
 EVAL_BATCH_SIZE = 32

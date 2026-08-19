@@ -113,6 +113,58 @@ A jump from ~0.55–0.58 mean AUC (untrained baseline) to 0.9808 — full fine-t
 
 LoRA gives up only ~0.0085 mean AUC (0.87 percentage points) versus full fine-tuning, while training ~365x fewer parameters and producing a checkpoint ~350x smaller. The gap is largest on the rarest labels (`threat`: 0.9634 → 0.9357, `identity_hate`: 0.9649 → 0.9511) — with only 478 and 1,405 positive examples respectively in the full dataset, these labels benefit most from the extra capacity of full fine-tuning.
 
+## Running the Scripts
+
+### Setup
+
+```bash
+# Create the virtual environment (already done if .venv exists)
+python3 -m venv .venv
+
+# Activate it (macOS/Linux)
+source .venv/bin/activate
+
+# Install dependencies
+pip install -r requirements.txt
+```
+
+Deactivate anytime with `deactivate`. All commands below assume the venv is active and the working directory is the project root.
+
+### Data download
+
+```bash
+python test.py
+```
+Downloads the Jigsaw competition data via `kagglehub` (reads `KAGGLE_API_TOKEN` from `.env`). See [Setup Learnings](#setup-learnings) above — you must accept the competition rules on kaggle.com first.
+
+### Baseline evaluation (no fine-tuning)
+
+```bash
+python evaluate_base.py       # raw bert-base-uncased + random head
+python evaluate_detoxify.py   # Detoxify's pretrained unitary/toxic-bert
+```
+
+### Full fine-tuning
+
+```bash
+python fine_tune_bert.py       # trains bert-base-uncased, saves checkpoint to fine_tuned_bert/
+python evaluate_ft_bert.py     # scores fine_tuned_bert/ on the held-out slice
+```
+
+### LoRA (parameter-efficient) fine-tuning
+
+```bash
+python peft_base_bert.py            # trains LoRA adapters, saves to peft_bert/
+python evaluate_peft_base_bert.py   # scores peft_bert/ on the held-out slice
+```
+
+### Inference on new text
+
+```bash
+python inference_ft_bert.py "You are an idiot" "Have a wonderful day!"
+```
+Omit arguments to be prompted for a single line of text interactively. See [Labeling New Text](#labeling-new-text) below for details.
+
 ## Labeling New Text
 
 [inference_ft_bert.py](inference_ft_bert.py) loads the fine-tuned checkpoint from `fine_tuned_bert/` (produced by [fine_tune_bert.py](fine_tune_bert.py)) and scores arbitrary text instead of a held-out CSV slice — useful for spot-checking the model on hand-written examples.
